@@ -33,7 +33,7 @@ statement
     | CREATE SINDEX (IF NOT EXISTS)? IDENTIFIER ON
         tableIdentifier indexCols (USING indexType)?
         partitionSpec?                                                #oapCreateIndex
-        | DROP SINDEX (IF EXISTS)? IDENTIFIER ON tableIdentifier
+    | DROP SINDEX (IF EXISTS)? IDENTIFIER ON tableIdentifier
         partitionSpec?                                                #oapDropIndex
     | DISABLE SINDEX IDENTIFIER                                       #oapDisableIndex
     | ENABLE SINDEX IDENTIFIER                                        #oapEnableIndex
@@ -54,10 +54,6 @@ partitionVal
     : identifier (EQ constant)?
     ;
 
-constantList
-    : '(' constant (',' constant)* ')'
-    ;
-
 constant
     : NULL                                                                                     #nullLiteral
     | interval                                                                                 #intervalLiteral
@@ -66,18 +62,6 @@ constant
     | booleanValue                                                                             #booleanLiteral
     | STRING+                                                                                  #stringLiteral
     ;
-
-tableAlias
-    : (AS? identifier identifierList?)?
-    ;
-identifierList
-    : '(' identifierSeq ')'
-    ;
-
-identifierSeq
-    : identifier (',' identifier)*
-    ;
-
 
 indexCols
     : '(' indexCol (',' indexCol)* ')'
@@ -111,7 +95,6 @@ intervalValue
     | STRING
     ;
 
-
 identifier
     : IDENTIFIER             #unquotedIdentifier
     | quotedIdentifier       #quotedIdentifierAlternative
@@ -134,8 +117,6 @@ booleanValue
 quotedIdentifier
     : BACKQUOTED_IDENTIFIER
     ;
-
-
 
 DISABLE: 'DISABLE';
 ENABLE: 'ENABLE';

@@ -38,7 +38,7 @@ import org.apache.spark.sql.internal.SQLConf
 import org.apache.spark.sql.types._
 
 /**
- * A SQL parser that tries to parse OAP commands. If failng to parse the SQL text, it will
+ * A SQL parser that tries to parse OAP commands. If failing to parse the SQL text, it will
  * forward the call to `delegate`.
  */
 class OapSparkSqlParser(session: SparkSession, delegate: ParserInterface) extends ParserInterface {
@@ -51,7 +51,7 @@ class OapSparkSqlParser(session: SparkSession, delegate: ParserInterface) extend
     builder.visitSingleStatement(parser.singleStatement()) match {
       case plan: LogicalPlan => plan
       case _ => delegate.parsePlan(sqlText)
- }
+    }
   }
   // scalastyle:off line.size.limit
   /**
@@ -206,7 +206,7 @@ class OapSqlBaseAstBuilder(conf: SQLConf) extends OapSqlBaseBaseVisitor[AnyRef] 
   }
 
   protected def visitNonOptionalPartitionSpec(
-                                               ctx: PartitionSpecContext): Map[String, String] = withOrigin(ctx) {
+      ctx: PartitionSpecContext): Map[String, String] = withOrigin(ctx) {
     visitPartitionSpec(ctx).map {
       case (key, None) => throw new ParseException(s"Found an empty partition key '$key'.", ctx)
       case (key, Some(value)) => key -> value
@@ -312,9 +312,9 @@ case object PostProcessor extends OapSqlBaseBaseListener {
   }
 
   private def replaceTokenByIdentifier(
-                                        ctx: ParserRuleContext,
-                                        stripMargins: Int)(
-                                        f: CommonToken => CommonToken = identity): Unit = {
+      ctx: ParserRuleContext,
+      stripMargins: Int)(
+      f: CommonToken => CommonToken = identity): Unit = {
     val parent = ctx.getParent
     parent.removeLastChild()
     val token = ctx.getChild(0).getPayload.asInstanceOf[Token]
