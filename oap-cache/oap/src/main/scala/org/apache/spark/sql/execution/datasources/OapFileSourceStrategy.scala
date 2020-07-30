@@ -22,6 +22,7 @@ import org.apache.spark.sql.{execution, SparkSession, Strategy}
 import org.apache.spark.sql.catalyst.planning.PhysicalOperation
 import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.execution.{FileSourceScanExec, FilterExec, ProjectExec, SparkPlan}
+import org.apache.spark.sql.execution.dynamicpruning.PlanDynamicPruningFilters
 import org.apache.spark.sql.internal.oap.OapConf
 
 /**
@@ -177,7 +178,10 @@ object OapFileSourceStrategy extends Strategy with Logging {
     plan match {
       case PhysicalOperation(_, _, LogicalRelation(_: HadoopFsRelation, _, _, _)) =>
         FileSourceStrategy(plan).headOption match {
-          case Some(head) => tryOptimize(head) :: Nil
+          case Some(head) =>
+            val PlanDynamicPruningFiltersPlan =
+              PlanDynamicPruningFilters(SparkSession.getActiveSession.get).apply(head)
+            tryOptimize(PlanDynamicPruningFiltersPlan) :: Nil
           case _ => Nil
         }
       case _ => Nil
