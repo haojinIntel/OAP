@@ -178,10 +178,7 @@ object OapFileSourceStrategy extends Strategy with Logging {
     plan match {
       case PhysicalOperation(_, _, LogicalRelation(_: HadoopFsRelation, _, _, _)) =>
         FileSourceStrategy(plan).headOption match {
-          case Some(head) =>
-            val PlanDynamicPruningFiltersPlan =
-              PlanDynamicPruningFilters(SparkSession.getActiveSession.get).apply(head)
-            tryOptimize(PlanDynamicPruningFiltersPlan) :: Nil
+          case Some(head) => tryOptimize(head) :: Nil
           case _ => Nil
         }
       case _ => Nil
