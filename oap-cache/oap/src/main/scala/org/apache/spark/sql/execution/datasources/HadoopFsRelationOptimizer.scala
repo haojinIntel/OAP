@@ -42,7 +42,7 @@ object HadoopFsRelationOptimizer extends Logging {
 
     def selectedPartitions: Seq[PartitionDirectory] = {
       relation.location.listFiles(
-        partitionKeyFilters.filter(p => !p.isInstanceOf[DynamicPruningSubquery]), Nil)
+        partitionKeyFilters.filterNot(p => p.isInstanceOf[DynamicPruningSubquery]), Nil)
     }
 
     relation.fileFormat match {
