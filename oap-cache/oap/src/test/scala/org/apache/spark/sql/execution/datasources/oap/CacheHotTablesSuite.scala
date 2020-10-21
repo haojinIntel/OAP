@@ -20,13 +20,11 @@ package org.apache.spark.sql.execution.datasources.oap
 import org.scalatest.BeforeAndAfterEach
 
 import org.apache.spark.sql.QueryTest
-import org.apache.spark.sql.execution.{FileSourceScanExec, FilterExec, ProjectExec, SparkPlan}
+import org.apache.spark.sql.execution.{FileSourceScanExec, FilterExec, OapFileSourceScanExec, ProjectExec, SparkPlan}
 import org.apache.spark.sql.execution.datasources._
-import org.apache.spark.sql.execution.datasources.orc.OrcFileFormat
 import org.apache.spark.sql.execution.datasources.parquet.ParquetFileFormat
-import org.apache.spark.sql.internal.SQLConf
 import org.apache.spark.sql.internal.oap.OapConf
-import org.apache.spark.sql.test.oap.{SharedOapContext, TestIndex}
+import org.apache.spark.sql.test.oap.{SharedOapContext}
 import org.apache.spark.util.Utils
 
 abstract class CacheHotTablesSuite extends QueryTest with SharedOapContext with
@@ -72,10 +70,18 @@ abstract class CacheHotTablesSuite extends QueryTest with SharedOapContext with
     assert(filter.children.length == 1)
 
     val scan = filter.children.head
-    assert(scan.isInstanceOf[FileSourceScanExec])
-    val relation = scan.asInstanceOf[FileSourceScanExec].relation
-    assert(relation.isInstanceOf[HadoopFsRelation])
-    assert(verifyFileFormat(relation.fileFormat))
+    var relation: HadoopFsRelation = null
+    try {
+      assert(scan.isInstanceOf[OapFileSourceScanExec])
+      relation = scan.asInstanceOf[OapFileSourceScanExec].relation
+    } catch {
+      case ex: Exception =>
+        assert(scan.isInstanceOf[FileSourceScanExec])
+        relation = scan.asInstanceOf[FileSourceScanExec].relation
+    } finally {
+      assert(relation.isInstanceOf[HadoopFsRelation])
+      assert(verifyFileFormat(relation.fileFormat))
+    }
 
     val sparkPlans = FileSourceStrategy(plan)
     assert(sparkPlans.size == 1)
@@ -101,10 +107,18 @@ abstract class CacheHotTablesSuite extends QueryTest with SharedOapContext with
     assert(optimizedSparkPlan.children.length == 1)
 
     val scan = optimizedSparkPlan.children.head
-    assert(scan.isInstanceOf[FileSourceScanExec])
-    val relation = scan.asInstanceOf[FileSourceScanExec].relation
-    assert(relation.isInstanceOf[HadoopFsRelation])
-    assert(verifyFileFormat(relation.fileFormat))
+    var relation: HadoopFsRelation = null
+    try {
+      assert(scan.isInstanceOf[OapFileSourceScanExec])
+      relation = scan.asInstanceOf[OapFileSourceScanExec].relation
+    } catch {
+      case ex: Exception =>
+        assert(scan.isInstanceOf[FileSourceScanExec])
+        relation = scan.asInstanceOf[FileSourceScanExec].relation
+    } finally {
+      assert(relation.isInstanceOf[HadoopFsRelation])
+      assert(verifyFileFormat(relation.fileFormat))
+    }
 
     val sparkPlans = FileSourceStrategy(plan)
     assert(sparkPlans.size == 1)
@@ -123,8 +137,8 @@ abstract class CacheHotTablesSuite extends QueryTest with SharedOapContext with
     val optimizedSparkPlans = OapFileSourceStrategy(plan)
     assert(optimizedSparkPlans.size == 1)
     val optimizedSparkPlan = optimizedSparkPlans.head
-    assert(optimizedSparkPlan.isInstanceOf[FileSourceScanExec])
-    val relation = optimizedSparkPlan.asInstanceOf[FileSourceScanExec].relation
+    assert(optimizedSparkPlan.isInstanceOf[OapFileSourceScanExec])
+    val relation = optimizedSparkPlan.asInstanceOf[OapFileSourceScanExec].relation
     assert(verifyFileFormat(relation.fileFormat))
 
     val sparkPlans = FileSourceStrategy(plan)
