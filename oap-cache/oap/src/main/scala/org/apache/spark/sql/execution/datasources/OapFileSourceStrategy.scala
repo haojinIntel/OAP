@@ -32,10 +32,10 @@ object OapFileSourceStrategy extends Strategy with Logging {
 
     /**
      * After call [[FileSourceStrategy]], the result [[SparkPlan]] should the follow 4 scenarios:
-     *  1. [[ProjectExec]] -> [[FilterExec]] -> [[OapFileSourceScanExec]]
-     *  2. [[ProjectExec]] -> [[OapFileSourceScanExec]]
-     *  3. [[FilterExec]] -> [[OapFileSourceScanExec]]
-     *  4. [[OapFileSourceScanExec]]
+     *  1. [[ProjectExec]] -> [[FilterExec]] -> [[FileSourceScanExec]]
+     *  2. [[ProjectExec]] -> [[FileSourceScanExec]]
+     *  3. [[FilterExec]] -> [[FileSourceScanExec]]
+     *  4. [[FileSourceScanExec]]
      * Classified discussion the 4 scenarios and assemble a new [[SparkPlan]] if can optimized.
      */
     def tryOptimize(head: SparkPlan): SparkPlan = {
