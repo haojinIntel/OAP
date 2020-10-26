@@ -25,7 +25,7 @@ import org.apache.parquet.hadoop.api.InitContext
 import org.apache.parquet.hadoop.utils.Collections3
 
 import org.apache.spark.sql.execution.datasources.oap.filecache.{FiberCache, FiberId}
-import org.apache.spark.sql.execution.datasources.parquet.{ParquetReadSupportWrapper, VectorizedColumnReader}
+import org.apache.spark.sql.execution.datasources.parquet.{ParquetReadSupportWrapper, SkippableVectorizedColumnReader}
 import org.apache.spark.sql.execution.vectorized.OnHeapColumnVector
 import org.apache.spark.sql.oap.OapRuntime
 import org.apache.spark.sql.types._
@@ -67,7 +67,7 @@ private[oap] case class ParquetFiberDataLoader(
     val columnMeta = reader.findColumnMeta(blockMetaData, columnDescriptor)
     val fiberData = reader.readFiberData(blockMetaData, columnDescriptor, columnMeta)
     val columnReader =
-      new VectorizedColumnReader(columnDescriptor, originalType,
+      new SkippableVectorizedColumnReader(columnDescriptor, originalType,
         fiberData.getPageReader(columnDescriptor), ZoneId.systemDefault, "LEGACY")
 
     if (OapRuntime.getOrCreate.fiberCacheManager.dataCacheCompressEnable) {

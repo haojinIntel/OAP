@@ -28,7 +28,7 @@ import org.apache.spark.internal.Logging
 import org.apache.spark.io.{CompressionCodec => SparkCompressionCodec}
 import org.apache.spark.sql.execution.datasources.OapException
 import org.apache.spark.sql.execution.datasources.oap.filecache._
-import org.apache.spark.sql.execution.datasources.parquet.{ParquetDictionaryWrapper, VectorizedColumnReader}
+import org.apache.spark.sql.execution.datasources.parquet.{ParquetDictionaryWrapper, SkippableVectorizedColumnReader}
 import org.apache.spark.sql.execution.vectorized.OnHeapColumnVector
 import org.apache.spark.sql.oap.OapRuntime
 import org.apache.spark.sql.types._
@@ -52,7 +52,7 @@ object ParquetDataFiberCompressedWriter extends Logging {
   val codecName = OapRuntime.getOrCreate.fiberCacheManager.dataCacheCompressionCodec
   val compressionCodec = SparkCompressionCodec.createCodec(new SparkConf(), codecName)
 
-  def dumpToCache(reader: VectorizedColumnReader,
+  def dumpToCache(reader: SkippableVectorizedColumnReader,
       total: Int, dataType: DataType): FiberCache = {
     // For the dictionary case, the column vector occurs some batch has dictionary
     // and some no dictionary. Therefore we still read the total value to cv instead of batch.
