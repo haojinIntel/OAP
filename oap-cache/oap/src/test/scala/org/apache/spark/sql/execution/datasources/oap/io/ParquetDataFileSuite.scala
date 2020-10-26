@@ -46,7 +46,7 @@ import org.apache.spark.memory.MemoryMode
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.execution.datasources.oap.filecache.FiberCache
 import org.apache.spark.sql.execution.datasources.parquet.{ParquetReadSupportWrapper, SkippableVectorizedColumnReader}
-import org.apache.spark.sql.execution.vectorized.OnHeapColumnVector
+import org.apache.spark.sql.execution.vectorized.OapOnHeapColumnVector
 import org.apache.spark.sql.internal.SQLConf
 import org.apache.spark.sql.internal.oap.OapConf
 import org.apache.spark.sql.oap.OapRuntime
@@ -644,7 +644,7 @@ class ParquetCacheDataWithDictionaryWithNullsCompressedSuite extends ParquetData
     val dataFiberReader = ParquetDataFiberCompressedReader(
       address, IntegerType, rowCount, fiberCache)
     val num = OapRuntime.getOrCreate.fiberCacheManager.dataCacheCompressionSize
-    val ret1 = new OnHeapColumnVector(num, IntegerType)
+    val ret1 = new OapOnHeapColumnVector(num, IntegerType)
     dataFiberReader.readBatch(0, num, ret1)
     for (i <- 0 until num) {
       if (i % 2 == 0) {
@@ -676,7 +676,7 @@ class ParquetCacheDataWithDictionaryWithNullsCompressedSuite extends ParquetData
     val dataFiberReader = ParquetDataFiberCompressedReader(
       address, LongType, rowCount, fiberCache)
     val num = OapRuntime.getOrCreate.fiberCacheManager.dataCacheCompressionSize
-    val ret1 = new OnHeapColumnVector(num, LongType)
+    val ret1 = new OapOnHeapColumnVector(num, LongType)
 
     dataFiberReader.readBatch(start, num, ret1)
     for (i <- 0 until num) {
@@ -710,7 +710,7 @@ class ParquetCacheDataWithDictionaryWithNullsCompressedSuite extends ParquetData
       address, BooleanType, rowCount, fiberCache)
     val num = OapRuntime.getOrCreate.fiberCacheManager.dataCacheCompressionSize
 
-    val ret1 = new OnHeapColumnVector(num, BooleanType)
+    val ret1 = new OapOnHeapColumnVector(num, BooleanType)
 
     dataFiberReader.readBatch(start, num, ret1)
     for (i <- 0 until num) {
@@ -744,7 +744,7 @@ class ParquetCacheDataWithDictionaryWithNullsCompressedSuite extends ParquetData
       address, FloatType, rowCount, fiberCache)
     val num = OapRuntime.getOrCreate.fiberCacheManager.dataCacheCompressionSize
 
-    val ret1 = new OnHeapColumnVector(num, FloatType)
+    val ret1 = new OapOnHeapColumnVector(num, FloatType)
 
     dataFiberReader.readBatch(start, num, ret1)
     for (i <- 0 until num) {
@@ -778,7 +778,7 @@ class ParquetCacheDataWithDictionaryWithNullsCompressedSuite extends ParquetData
       address, DoubleType, rowCount, fiberCache)
     val num = OapRuntime.getOrCreate.fiberCacheManager.dataCacheCompressionSize
 
-    val ret1 = new OnHeapColumnVector(num, DoubleType)
+    val ret1 = new OapOnHeapColumnVector(num, DoubleType)
 
     dataFiberReader.readBatch(start, num, ret1)
     for (i <- 0 until num) {
@@ -811,7 +811,7 @@ class ParquetCacheDataWithDictionaryWithNullsCompressedSuite extends ParquetData
     val dataFiberReader = ParquetDataFiberCompressedReader(
       address, BinaryType, rowCount, fiberCache)
 
-    val ret1 = new OnHeapColumnVector(rowCount, BinaryType)
+    val ret1 = new OapOnHeapColumnVector(rowCount, BinaryType)
     val num = OapRuntime.getOrCreate.fiberCacheManager.dataCacheCompressionSize
     dataFiberReader.readBatch(start, num, ret1)
     for (i <- start until num) {
@@ -882,7 +882,7 @@ class ParquetCacheDataWithDictionaryWithoutNullsCompressedSuite extends ParquetD
     val dataFiberReader = ParquetDataFiberCompressedReader(
       address, IntegerType, rowCount, fiberCache)
     val num = OapRuntime.getOrCreate.fiberCacheManager.dataCacheCompressionSize
-    val ret1 = new OnHeapColumnVector(num, IntegerType)
+    val ret1 = new OapOnHeapColumnVector(num, IntegerType)
     dataFiberReader.readBatch(start, num, ret1)
     for (i <- 0 until num ) {
       assert(2 == ret1.getInt(i))
@@ -912,7 +912,7 @@ class ParquetCacheDataWithDictionaryWithoutNullsCompressedSuite extends ParquetD
     val dataFiberReader = ParquetDataFiberCompressedReader(
       address, LongType, rowCount, fiberCache)
     val num = OapRuntime.getOrCreate.fiberCacheManager.dataCacheCompressionSize
-    val ret1 = new OnHeapColumnVector(num, LongType)
+    val ret1 = new OapOnHeapColumnVector(num, LongType)
 
     dataFiberReader.readBatch(start, num, ret1)
     for (i <- 0 until num) {
@@ -944,7 +944,7 @@ class ParquetCacheDataWithDictionaryWithoutNullsCompressedSuite extends ParquetD
       address, BooleanType, rowCount, fiberCache)
     val num = OapRuntime.getOrCreate.fiberCacheManager.dataCacheCompressionSize
 
-    val ret1 = new OnHeapColumnVector(num, BooleanType)
+    val ret1 = new OapOnHeapColumnVector(num, BooleanType)
 
     dataFiberReader.readBatch(start, num, ret1)
     for (i <- 0 until num) {
@@ -976,7 +976,7 @@ class ParquetCacheDataWithDictionaryWithoutNullsCompressedSuite extends ParquetD
       address, FloatType, rowCount, fiberCache)
     val num = OapRuntime.getOrCreate.fiberCacheManager.dataCacheCompressionSize
 
-    val ret1 = new OnHeapColumnVector(num, FloatType)
+    val ret1 = new OapOnHeapColumnVector(num, FloatType)
 
     dataFiberReader.readBatch(start, num, ret1)
     for (i <- 0 until num) {
@@ -1008,7 +1008,7 @@ class ParquetCacheDataWithDictionaryWithoutNullsCompressedSuite extends ParquetD
       address, DoubleType, rowCount, fiberCache)
     val num = OapRuntime.getOrCreate.fiberCacheManager.dataCacheCompressionSize
 
-    val ret1 = new OnHeapColumnVector(num, DoubleType)
+    val ret1 = new OapOnHeapColumnVector(num, DoubleType)
 
     dataFiberReader.readBatch(start, num, ret1)
     for (i <- 0 until num) {
@@ -1039,7 +1039,7 @@ class ParquetCacheDataWithDictionaryWithoutNullsCompressedSuite extends ParquetD
     val dataFiberReader = ParquetDataFiberCompressedReader(
       address, BinaryType, rowCount, fiberCache)
 
-    val ret1 = new OnHeapColumnVector(rowCount, BinaryType)
+    val ret1 = new OapOnHeapColumnVector(rowCount, BinaryType)
     val num = OapRuntime.getOrCreate.fiberCacheManager.dataCacheCompressionSize
     dataFiberReader.readBatch(start, num, ret1)
     for (i <- start until num) {
