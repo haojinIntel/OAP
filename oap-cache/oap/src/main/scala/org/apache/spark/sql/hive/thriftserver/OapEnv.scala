@@ -42,6 +42,7 @@ private[spark] object OapEnv extends Logging {
       sc.addSparkListener(new OapListener)
       this.sparkSession = SparkSession.getActiveSession.get
       sc.ui.foreach(new OapTab(_))
+      initialized = true
     }
   }
 }

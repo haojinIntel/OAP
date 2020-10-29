@@ -98,7 +98,7 @@ function createRESTEndPoint(appId) {
         if (isNaN(attemptId)) {
             return newBaseURI + "/api/v1/applications/" + appId + "/oap/fibercachemanagers";
         } else {
-            return newBaseURI + "/api/v1/applications/" + appId + "/" + attemptId + "/oap/fibercachemanagers";
+            return newBaseURI + "/api/v1/applications/" + appId + "/oap/" + attemptId + "/fibercachemanagers";
         }
     }
     return location.origin + "/api/v1/applications/" + appId + "/oap/fibercachemanagers";
