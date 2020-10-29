@@ -47,12 +47,9 @@ private[v1] class OapAbstractApplicationResource extends BaseAppResource {
       {
         val cacheStats = OapRuntime.getOrCreate.fiberSensor.getExecutorToCacheManager.
           getOrDefault(executorSummary.id, CacheStats())
-        val indexDataCacheSeparationEnable = SparkEnv.get.conf.getBoolean(
-          OapConf.OAP_INDEX_DATA_SEPARATION_ENABLE.key,
-          OapConf.OAP_INDEX_DATA_SEPARATION_ENABLE.defaultValue.get) ||
-          SparkEnv.get.conf.getBoolean(
-            OapConf.OAP_INDEX_DATA_SEPARATION_ENABLED.key,
-            OapConf.OAP_INDEX_DATA_SEPARATION_ENABLED.defaultValue.get)
+        val indexDataCacheSeparationEnable = SparkEnv.get.conf.get(
+          OapConf.OAP_INDEX_DATA_SEPARATION_ENABLE) ||
+          SparkEnv.get.conf.get(OapConf.OAP_INDEX_DATA_SEPARATION_ENABLED)
 
         new FiberCacheManagerSummary(
           executorSummary.id,
@@ -105,7 +102,7 @@ private[v1] class OapOneApplicationResource extends OapAbstractApplicationResour
   @GET
   def getApp(): ApplicationInfo = {
     val app = uiRoot.getApplicationInfo(appId)
-    app.getOrElse(throw new NotFoundException("unknown app: " + appId))
+    app.getOrElse(throw new NotFoundException(s"unknown app: $appId"))
   }
 
 }
